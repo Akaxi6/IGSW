@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fbfcfa">
+<meta name="description" content="IGSW：以本征解耦高斯表示和结构保持天气细化，重建动态驾驶场景的雨雪外观。方法、完整序列对比及论文实验结果。">
+<title>IGSW | 本征解耦高斯的多天气城市场景重建</title>
+<style>/*!
+ISC License
+
+Copyright (c) 2026 Lucide Icons and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+---
+
+The following Lucide icons are derived from the Feather project:
+
+airplay, alert-circle, alert-octagon, alert-triangle, aperture, arrow-down-circle, arrow-down-left, arrow-down-right, arrow-down, arrow-left-circle, arrow-left, arrow-right-circle, arrow-right, arrow-up-circle, arrow-up-left, arrow-up-right, arrow-up, at-sign, calendar, cast, check, chevron-down, chevron-left, chevron-right, chevron-up, chevrons-down, chevrons-left, chevrons-right, chevrons-up, circle, clipboard, clock, code, columns, command, compass, corner-down-left, corner-down-right, corner-left-down, corner-left-up, corner-right-down, corner-right-up, corner-up-left, corner-up-right, crosshair, database, divide-circle, divide-square, dollar-sign, download, external-link, feather, frown, hash, headphones, help-circle, info, italic, key, layout, life-buoy, link-2, link, loader, lock, log-in, log-out, maximize, meh, minimize, minimize-2, minus-circle, minus-square, minus, monitor, moon, more-horizontal, more-vertical, move, music, navigation-2, navigation, octagon, pause-circle, percent, plus-circle, plus-square, plus, power, radio, rss, search, server, share, shopping-bag, sidebar, smartphone, smile, square, table-2, tablet, target, terminal, trash-2, trash, triangle, tv, type, upload, x-circle, x-octagon, x-square, x, zoom-in, zoom-out
+
+The MIT License (MIT) (for the icons listed above)
+
+Copyright (c) 2013-present Cole Bemis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
+:root{--ink:#172b2c;--muted:#64716e;--green:#146a5d;--warm:#ac5833;--line:#d9e1db;--paper:#fbfcfa;--band:#f0f4f0;--body:17px;font-family:Inter,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;color:var(--ink);font-synthesis:none;letter-spacing:0;color-scheme:light}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;background:var(--paper);font-size:var(--body);line-height:1.8}a{color:inherit;text-decoration:none}button,input,select{font:inherit}button,a,select{-webkit-tap-highlight-color:transparent}button{cursor:pointer;color:inherit}button{border:0}button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,.table-scroll:focus-visible{outline:3px solid #c27745;outline-offset:4px}img{display:block;max-width:100%;height:auto}svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}figure,p,h1,h2,h3,h4,dl{margin:0}p+p{margin-top:18px}h1,h2,h3,h4{line-height:1.35;letter-spacing:0}h2{font-size:32px;font-weight:650}h3{font-size:23px;font-weight:600}h4{font-size:17px}button:disabled{opacity:.5;cursor:wait}select{max-width:100%;border:1px solid var(--line);border-radius:5px;padding:8px 34px 8px 12px;color:var(--ink);background:#fff;min-height:42px}button,.button{transition:background .15s,color .15s}::selection{background:#c8e4d9}.shell{width:min(1200px,calc(100% - 80px));margin-inline:auto}.skip{position:fixed;top:-100px;left:20px;z-index:100;background:#fff;padding:10px}.skip:focus{top:10px}.header{height:76px;position:sticky;top:0;z-index:30;background:#fbfcfaf5;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}.nav-shell{width:min(1440px,calc(100% - 80px));height:100%;display:flex;align-items:center;gap:28px;margin:auto}.brand{display:flex;align-items:center;gap:16px;font-size:24px;font-weight:800}.brand-divider{height:21px;width:1px;background:var(--line)}.brand-note{font-size:12px;font-weight:500;color:var(--muted)}nav{display:flex;gap:28px;margin-left:auto;font-size:14px}nav a{padding:10px 0;border-bottom:2px solid transparent}nav a:hover,nav a.current{color:var(--green);border-color:var(--green)}.icon-button{display:inline-flex;justify-content:center;align-items:center;width:40px;height:40px;border:1px solid var(--line);border-radius:5px;background:transparent;flex:0 0 40px}.icon-button:hover{background:#e3eae5}.hero{height:560px;min-height:480px;max-height:calc(100svh - 130px);position:relative;color:#fff;overflow:hidden;background:#243734}.hero-views{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1.7fr 1fr;gap:3px}.hero-views img{width:100%;height:100%;object-fit:cover}.hero-shade{position:absolute;inset:0;background:#06171355}.hero-content{position:relative;padding-top:60px}.eyebrow{display:block;font:600 11px/1.5 "Segoe UI",Arial,sans-serif;color:var(--green);margin-bottom:15px}.eyebrow.light{color:#f3fbf7}.hero h1{font-size:86px;font-weight:750;line-height:1.02;text-shadow:0 2px 20px #001c2055}.hero h1 span{display:block;font-size:30px;line-height:1.5;margin-top:18px;font-weight:550}.hero-deck{font-size:17px;margin-top:15px;text-shadow:0 2px 5px #000}.hero-links{display:flex;gap:12px;margin-top:28px}.button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:46px;padding:10px 20px;font-size:14px;font-weight:600;border-radius:4px;border:1px solid transparent;white-space:normal;text-align:center}.light-button{background:#fff;color:var(--ink)}.light-button:hover{background:#e5f1e9}.ghost{border:1px solid #ffffff7a;color:#fff;background:#15292355}.ghost:hover{background:#17362ec4}.solid{background:var(--green);color:#fff}.solid:hover{background:#0b4e44}.hero-bottom{position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:space-between;align-items:center;gap:20px;font-size:11px;color:#ecf4ef}.segmented{display:inline-flex;align-items:stretch;border:1px solid var(--line);border-radius:5px;overflow:hidden;background:#fff;flex-shrink:0}.segmented button{display:flex;align-items:center;justify-content:center;gap:7px;background:none;border-right:1px solid var(--line);min-height:40px;padding:7px 17px;font-size:14px;white-space:nowrap}.segmented button:last-child{border-right:0}.segmented button.active{background:var(--green);color:white}.segmented button:hover:not(.active){background:#eaf1ec}.segmented svg{width:17px;height:17px}.inverted{border-color:#ffffff80;background:#08232270}.inverted button{color:white;border-color:#ffffff50}.inverted button.active{background:#fff;color:var(--ink)}.inverted button:hover:not(.active){background:#ffffff30}.section{padding-top:82px;padding-bottom:82px}.section-heading{display:flex;gap:30px;justify-content:space-between;align-items:flex-start;margin-bottom:34px}.section-heading p{color:var(--muted);font-size:16px;margin-top:12px;max-width:790px}.section-index{font-size:15px;color:#91a59a;border-top:1px solid #a9b7af;padding-top:6px;min-width:46px;text-align:right}.band{background:var(--band);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.overview-grid{display:grid;grid-template-columns:1.45fr 1fr;gap:100px}.lead-text{font-size:18px;line-height:1.95}.overview-facts{border-top:1px solid var(--line)}.overview-facts>div{padding:20px 0;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:26px}.overview-facts b{font-size:27px;min-width:150px;font-weight:500;color:var(--green)}.overview-facts span{font-size:13px;color:var(--muted);line-height:1.7}.teaser{margin-top:45px}.image-button{display:block;width:100%;padding:0;background:transparent;cursor:zoom-in}.image-button img{width:100%}figcaption{font-size:12px;color:var(--muted);line-height:1.7;margin-top:14px}.pipeline{background:#fff;padding:14px 14px 10px}.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-top:44px}.method-grid article+article{border-left:1px solid #c9d6cd;padding-left:40px}.stage-label{color:var(--green);font-size:13px;display:flex;justify-content:space-between;gap:15px;margin-bottom:17px;font-weight:700}.stage-label span{color:var(--muted);font-size:11px;font-weight:400;align-self:center}.stage-label.warm{color:var(--warm)}.method-grid h3{font-size:22px;margin-bottom:20px}.method-grid p{font-size:15px;color:#485c55;line-height:1.9}.formula{font:18px/2 Georgia,"Times New Roman",serif;letter-spacing:0;padding:17px 0;margin:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}.formula sub,.formula sup{font-size:70%}.technical{border-top:1px solid #ccd7cf;margin-top:32px}.technical summary{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;padding:16px 0;cursor:pointer;list-style:none}.technical summary::-webkit-details-marker{display:none}.technical[open] summary svg{transform:rotate(180deg)}.technical-body{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:8px 0 10px;font-size:14px;color:#485c55}.technical-body .formula{margin:0;border:0;padding:0}.viewer-toolbar,.table-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:20px}.select-label{display:flex;gap:10px;align-items:center;font-size:12px;color:var(--muted);min-width:0}.viewer-toolbar .select-label{margin-left:auto}.comparison{position:relative;width:100%;aspect-ratio:674/384;overflow:hidden;background:#dfebe3;border-radius:3px}.comparison>img,.comparison-before,.comparison-before>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.comparison-before{clip-path:inset(0 50% 0 0)}.comparison input{position:absolute;inset:0;opacity:0;width:100%;height:100%;margin:0;z-index:5;cursor:ew-resize}.comparison:focus-within{outline:3px solid var(--warm);outline-offset:4px}.image-tag{position:absolute;top:18px;background:#112b27cc;border:1px solid #ffffff70;border-radius:3px;padding:5px 12px;color:#fff;font-size:13px;z-index:3}.before-tag{left:18px}.after-tag{right:18px;background:#0d6859dd}.wipe-line{position:absolute;left:50%;top:0;bottom:0;width:2px;background:#fff;z-index:4}.wipe-line>span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--ink);background:white;box-shadow:0 1px 10px #0005}.figure-meta{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:12px;font-size:12px;color:var(--muted)}.text-button{display:inline-flex;gap:7px;align-items:center;border:0;background:none;padding:4px 0;font-size:13px;color:var(--green)}.text-button:hover{text-decoration:underline}.text-button svg{width:16px;height:16px}.video-heading{margin-top:48px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:24px}.video-heading h3{font-size:22px}.video-surface{background:#e4e9e6;display:flex;justify-content:center;min-height:140px}.video-surface video{width:100%;max-height:720px;object-fit:contain;display:block;background:#0c1818}.table-toolbar .icon-button{margin-left:auto}.table-scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:16px;font-variant-numeric:tabular-nums}caption{text-align:left;font-size:12px;color:var(--muted);padding:2px 0 16px}th,td{padding:15px 18px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}thead th{font-size:12px;font-weight:600;color:var(--muted);background:#e7eee8;border-top:1px solid #bccfc2}th:first-child{text-align:left}tbody th{font-size:14px;font-weight:400}tbody tr.ours{background:#dae9df;color:#104b40}tbody tr.ours th{font-weight:700}td.best{font-weight:800;text-decoration:underline;text-underline-offset:4px;text-decoration-color:#6e9c89;text-decoration-thickness:1px}.table-note{margin-top:12px;color:var(--muted);font-size:12px}.result-note{font-size:16px;border-left:3px solid var(--green);padding:4px 0 4px 18px;margin-top:26px}.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:40px}.metric-grid>div{border-top:1px solid #afc3b6;padding-top:16px}.metric-grid h4{display:flex;justify-content:space-between;align-items:center;font-size:15px}.metric-grid svg{color:#578272;width:18px}.metric-grid p{color:var(--muted);font-size:13px;margin-top:8px}.structure-layout{display:grid;grid-template-columns:1.35fr 1fr;gap:55px;align-items:center}.structure-text h3{font-size:26px;margin:12px 0 24px}.structure-text p{font-size:16px}.mini-label{color:var(--warm);font:600 11px/1.5 "Segoe UI",Arial,sans-serif}.evidence-line{display:flex;justify-content:space-between;gap:20px;padding:15px 0;border-bottom:1px solid var(--line);font-size:13px}.evidence-line:first-of-type{margin-top:20px;border-top:1px solid var(--line)}.evidence-line span{color:var(--muted)}.structure-text .muted{font-size:13px;color:var(--muted);margin-top:20px}.ablation-description{font-size:14px;color:#53665e;margin-bottom:22px;max-width:850px}.ablation-bottom{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:start;margin-top:38px}.ablation-bottom>div{position:sticky;top:105px;padding-top:15px}.ablation-bottom h3{font-size:25px;margin-bottom:20px}.ablation-bottom p{font-size:16px}.ablation-bottom figure{max-width:520px;margin-left:auto}.component-key{margin:25px 0}.component-key>div{display:flex;align-items:center;gap:16px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}.component-key dt{font-weight:700;font-size:15px;color:var(--green)}.component-key dd{margin:0}.resources{display:flex;align-items:center;justify-content:space-between;gap:50px}.resources h2{font-size:26px;max-width:650px}.resources p{font-size:14px;color:var(--muted);margin-top:15px}.resources .button{flex-shrink:0}.footer{border-top:1px solid var(--line);padding:32px 0;background:#e8efe9}.footer-inner{display:flex;align-items:center;gap:40px}.footer strong{font-size:23px}.footer p{font-size:11px;color:var(--muted);margin-top:2px}.footer-inner>p{margin-left:auto}.footer-inner .icon-button{margin-left:30px}dialog{padding:0;border:1px solid #9caf9e;border-radius:6px;width:min(96vw,1600px);max-width:96vw;height:min(94vh,1300px);max-height:94vh;background:var(--paper);color:var(--ink)}dialog::backdrop{background:#091714dc}.dialog-bar{height:65px;display:flex;justify-content:space-between;align-items:center;padding:10px 18px;border-bottom:1px solid var(--line);gap:20px}.dialog-bar>span{font-size:13px;line-height:1.5}.dialog-bar>div{display:flex;gap:8px;flex-shrink:0}.lightbox-body{height:calc(100% - 65px);overflow:auto;display:flex;align-items:center;justify-content:center;padding:18px}.lightbox-body img{max-height:100%;max-width:100%;object-fit:contain}.lightbox-body.actual{display:block}.lightbox-body.actual img{max-height:none;max-width:none;width:auto;height:auto}.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:#173d34;color:white;border-radius:5px;padding:12px 20px;font-size:13px;z-index:100;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:90vw}.toast.visible{opacity:1;transform:translate(-50%,0)}
+@media(min-width:1600px){.hero{height:610px}.hero-content{padding-top:75px}.hero h1{font-size:94px}.hero h1 span{font-size:32px}}
+@media(max-width:1050px){.shell,.nav-shell{width:calc(100% - 48px)}.brand-note,.brand-divider{display:none}.overview-grid{gap:45px}.overview-facts b{min-width:100px;font-size:24px}.overview-facts>div{gap:15px}.method-grid{gap:30px}.method-grid article+article{padding-left:28px}.viewer-toolbar .select-label{margin-left:0}.structure-layout{gap:30px}.stage-label{display:block}.stage-label span{display:block;margin-top:4px}.ablation-bottom{gap:36px}.resources{gap:25px}.resources h2{font-size:24px}.hero h1{font-size:78px}.hero h1 span{font-size:28px}}
+@media(max-width:720px){:root{--body:16px}.shell,.nav-shell{width:calc(100% - 32px)}.header{height:62px}.nav-shell{gap:12px}.brand{font-size:22px}nav{gap:14px;font-size:12px}nav a[href="#overview"],nav a[href="#consistency"]{display:none}.header .icon-button{width:32px;height:32px;flex-basis:32px}.hero{height:550px;min-height:450px;max-height:calc(100svh - 110px)}.hero-views{grid-template-columns:1fr}.hero-views img:first-child,.hero-views img:last-child{display:none}.hero-views img{object-position:50% center}.hero-content{padding-top:36px}.hero h1{font-size:64px}.hero h1 span{font-size:24px;line-height:1.5;margin-top:15px}.hero .eyebrow{font-size:9px;max-width:280px}.hero-deck{font-size:14px;margin-top:12px}.hero-links{margin-top:24px}.button{padding:9px 16px;font-size:13px;min-height:44px}.hero-bottom{font-size:9px;bottom:15px;gap:12px;align-items:end}.hero-bottom>span{max-width:170px;line-height:1.6}.hero-bottom .segmented button{padding:7px 11px;min-height:36px}.section{padding-top:54px;padding-bottom:54px}h2{font-size:26px}.section-heading{gap:14px;margin-bottom:26px}.section-heading p{font-size:14px}.section-index{font-size:12px;min-width:28px}.eyebrow{font-size:10px;margin-bottom:12px}.overview-grid,.method-grid,.structure-layout,.ablation-bottom,.technical-body{grid-template-columns:1fr;gap:26px}.lead-text{font-size:16px}.overview-facts>div{padding:16px 0}.overview-facts b{min-width:130px}.overview-facts span{font-size:12px}.teaser{margin-top:30px}.pipeline{padding:6px}.method-grid{margin-top:28px}.method-grid article+article{border-left:0;border-top:1px solid var(--line);padding:27px 0 0}.method-grid h3{font-size:21px}.stage-label{display:flex}.stage-label span{margin:0;font-size:10px}.technical-body{gap:16px;font-size:13px}.formula{font-size:16px}.viewer-toolbar,.table-toolbar{gap:10px}.segmented button{font-size:12px;padding:7px 12px;min-height:38px}.select-label{font-size:11px}select{font-size:12px;padding:7px 26px 7px 9px;min-height:38px}.viewer-toolbar .select-label{width:100%;justify-content:space-between}.viewer-toolbar .select-label select{flex:1;max-width:70%}.comparison{border-radius:2px}.image-tag{font-size:10px;top:9px;padding:3px 7px}.before-tag{left:9px}.after-tag{right:9px}.wipe-line>span{width:34px;height:34px}.figure-meta{align-items:start;font-size:10px;gap:10px}.text-button{font-size:11px}.figure-meta>span{flex:1}.figure-meta>.text-button{flex-shrink:0}.video-heading{margin-top:34px;align-items:start;flex-direction:column;gap:14px}.video-heading h3{font-size:21px}.video-heading .select-label{width:100%}.video-heading select{flex:1;min-width:0}.video-surface video{max-height:600px}table{font-size:14px}th,td{padding:12px 11px}tbody th{font-size:12px}thead th{font-size:11px}.table-note{font-size:11px}.result-note{font-size:14px}.metric-grid{grid-template-columns:1fr 1fr;gap:20px;margin-top:30px}.metric-grid h4{font-size:13px}.metric-grid p{font-size:12px}.structure-text h3{font-size:24px}.structure-text p{font-size:15px}.structure-layout figure{order:2}.structure-text{order:1}.ablation-bottom>div{position:static;padding:0}.ablation-bottom h3{font-size:23px}.ablation-bottom p{font-size:14px}.ablation-bottom figure{max-width:100%;margin:0}.component-key{margin:20px 0}.resources{display:block}.resources h2{font-size:24px}.resources .button{margin-top:24px}.footer-inner{gap:20px;flex-wrap:wrap}.footer-inner>p{margin:0;font-size:10px}.footer-inner .icon-button{margin-left:auto}.footer p{font-size:10px}.dialog-bar{padding:8px 10px;height:76px;gap:10px}.dialog-bar>span{font-size:11px}.lightbox-body{height:calc(100% - 76px);padding:6px}.dialog-bar .icon-button{width:32px;height:32px;flex-basis:32px}figcaption{font-size:10px}}
+.video-surface,.video-surface video{background:#fff}
+/* Keep only the results comparison compact; full-size media remains available. */
+@media(min-width:1051px){#results .comparison,#results .comparison+.figure-meta{width:50%;margin-inline:auto}}
+@media(min-width:721px) and (max-width:1050px){#results .comparison,#results .comparison+.figure-meta{width:min(100%,600px);margin-inline:auto}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+@media print{.header,.hero,.video-surface,.viewer-toolbar,.resources,.footer,.icon-button,.text-button{display:none}.section{padding:20px 0}.shell{width:100%}.band{background:white}.ablation-bottom>div{position:static}body{font-size:11pt}.table-scroll{overflow:visible}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳转到正文</a>
+<header class="header"><div class="nav-shell">
+  <a class="brand" href="#top" aria-label="IGSW 首页">IGSW<span class="brand-divider"></span><span class="brand-note">IntrinsicGSWeather</span></a>
+  <nav aria-label="主导航"><a href="#overview">概述</a><a href="#method">方法</a><a href="#results">结果</a><a href="#consistency">一致性</a><a href="#ablation">消融</a></nav>
+  <button class="icon-button paper-trigger" title="下载论文 PDF" aria-label="下载论文 PDF"><i data-icon="FileText"></i></button>
+</div></header>
+<main id="main">
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="hero-views" aria-hidden="true"><img data-asset="nuscenes-rain-left-igsw" alt=""><img data-asset="nuscenes-rain-center-igsw" alt=""><img data-asset="nuscenes-rain-right-igsw" alt=""></div>
+  <div class="hero-shade"></div>
+  <div class="hero-content shell">
+    <div class="eyebrow light">MULTI-WEATHER URBAN SCENE RECONSTRUCTION</div>
+    <h1 id="hero-title">IGSW<span>本征解耦高斯的<br>多天气城市场景重建</span></h1>
+    <p class="hero-deck">让天气变化，让场景结构留下。</p>
+    <div class="hero-links"><button class="button light-button paper-trigger"><i data-icon="FileText"></i>论文 PDF</button><a class="button ghost" href="#results"><i data-icon="Play"></i>浏览结果</a></div>
+  </div>
+  <div class="hero-bottom shell"><span id="hero-caption">nuScenes · 001 · Frame 049 · IGSW 雨天</span><div class="segmented inverted" role="group" aria-label="首屏天气"><button class="active" data-hero="rain" aria-pressed="true"><i data-icon="CloudRain"></i>雨天</button><button data-hero="snow" aria-pressed="false"><i data-icon="Snowflake"></i>雪天</button></div></div>
+</section>
+
+<section id="overview" class="section shell">
+  <div class="section-heading"><div><span class="eyebrow">01 / THE IDEA</span><h2>天气外观与场景内容，分开学习。</h2></div><span class="section-index">01</span></div>
+  <div class="overview-grid"><div class="lead-text"><p>图像编辑模型能生成逼真的雨雪，却也可能让云层盖住建筑，让车辆细节在连续帧中漂移。直接拟合这些图像，会把天气变化和教师错误一起带入三维场景。</p><p><strong>IGSW</strong> 将背景高斯的外观分为跨天气共享的反照率与法线，以及天气特定的辐照度与残差；再通过结构保护门和逐高斯传输，学习教师的天气风格，同时保护原始场景内容。</p></div><div class="overview-facts"><div><b>2</b><span>本征建模与天气细化<br>两个优化阶段</span></div><div><b>100 × 3</b><span>每场景完整时刻与同步视角<br>300 张图像 · 297 个相邻帧对</span></div><div><b>Rain / Snow</b><span>nuScenes 与 Waymo<br>无额外天气粒子的场景渲染</span></div></div></div>
+  <figure class="wide-figure teaser"><button class="image-button" data-zoom="teaser" data-caption="IGSW 多天气城市场景重建概览" aria-label="放大多天气场景概览"><img data-asset="teaser" loading="lazy" alt="IGSW 论文概览：原始、雨天和雪天城市场景"></button><figcaption>Multi-Weather Urban Scene Reconstruction with Intrinsic-Decoupled Gaussian Splatting</figcaption></figure>
+</section>
+
+<section id="method" class="section band"><div class="shell">
+  <div class="section-heading"><div><span class="eyebrow">02 / METHOD</span><h2>先解耦，再有选择地细化。</h2><p>二维教师提供天气先验，最终结果始终由同一个动态高斯场景渲染。</p></div><span class="section-index">02</span></div>
+  <figure class="wide-figure pipeline"><button class="image-button" data-zoom="pipeline" data-caption="IGSW 两阶段方法框架，采用最新论文中的 pipeline" aria-label="放大方法框架"><img data-asset="pipeline" loading="lazy" alt="离线天气教师、本征高斯建模与结构保持天气细化的两阶段流程"></button><figcaption>Qwen-Image 天气教师 → 本征软先验 → 本征高斯建模 → 结构保持天气细化</figcaption></figure>
+  <div class="method-grid"><article><span class="stage-label">STAGE I <span>Intrinsic Gaussian modeling</span></span><h3>用本征表示区分稳定内容与天气变化</h3><p>背景高斯学习 32 维外观特征，经共享 Albedo / Normal 头与天气特定 Irradiance / Residual 头解码。动态物体保留天气条件 RGB 外观。</p><div class="formula">c<sub>i</sub><sup>w</sup> = clip(A<sub>i</sub> ⊙ E<sub>i</sub><sup>w</sup> + 0.1 R<sub>i</sub><sup>w</sup>, 0, 1)</div><p>原图与天气图的本征估计经过平均池化、Sobel 边缘和归一化。Albedo / Normal 对齐原始特征，Irradiance 跟随原始到天气的变化方向，不把噪声伪标签当作逐像素真值。</p></article><article><span class="stage-label warm">STAGE II <span>Structure-preserving refinement</span></span><h3>保护教师中的结构冲突，再增强天气响应</h3><p>外部语义与本征伪图识别教师冲突。可信区域学习完整天气图；冲突区域保留原始结构，并迁移教师颜色统计，构成安全监督目标。</p><div class="formula">T<sub>safe</sub><sup>w</sup> = (1 − G) ⊙ T<sup>w</sup> + G ⊙ S<sub>w</sub>(I<sup>o</sup>)</div><p>原始视图恢复后，固定几何与共享表示；优化目标天气头、天空和逐高斯标量 u、v，调节辐照度与残差。推理仅需要场景、相机、时间和天气条件。</p></article></div>
+  <details class="technical"><summary>天气传输与训练目标 <i data-icon="ChevronDown"></i></summary><div class="technical-body"><div class="formula">Ē<sub>i</sub><sup>w</sup> = E<sub>i</sub><sup>w</sup> exp(2 tanh u<sub>i</sub><sup>w</sup>)<br>R̄<sub>i</sub><sup>w</sup> = R<sub>i</sub><sup>w</sup> + 2 tanh(v<sub>i</sub><sup>w</sup>) 1<sub>3</sub></div><p>Stage I 联合使用 RGB 重建、本征特征一致性、辐照度方向以及场景正则；Stage II 使用安全教师的多尺度 RGB、局部 VGG、结构门内边缘、辐照度方向与传输正则。共享法线是辅助结构属性，并不直接进入颜色合成。结构门来自外部证据，而非直接由预测的高斯法线构成。</p></div></details>
+</div></section>
+
+<section id="results" class="section shell">
+  <div class="section-heading"><div><span class="eyebrow">03 / VISUAL RESULTS</span><h2>同一场景，同一视角，不同天气。</h2><p>对应帧展示，完整对比图和序列视频保留所有比较方法。</p></div><span class="section-index">03</span></div>
+  <div class="viewer-toolbar"><div class="segmented" role="group" aria-label="可视化数据集"><button data-scene="nuscenes" class="active" aria-pressed="true">nuScenes</button><button data-scene="waymo" aria-pressed="false">Waymo</button></div><div class="segmented" role="group" aria-label="可视化天气"><button data-weather="rain" class="active" aria-pressed="true"><i data-icon="CloudRain"></i>雨天</button><button data-weather="snow" aria-pressed="false"><i data-icon="Snowflake"></i>雪天</button></div><div class="segmented" role="group" aria-label="相机视角"><button data-view="left" aria-pressed="false">左</button><button data-view="center" class="active" aria-pressed="true">中</button><button data-view="right" aria-pressed="false">右</button></div><label class="select-label">对照<select id="comparison-method"><option value="weathercity">WeatherCity</option><option value="qwen">Qwen-Image</option><option value="raw">原始 Raw GT</option></select></label></div>
+  <div class="comparison" id="comparison"><img id="compare-ours" alt="IGSW 对应视角天气渲染"><div class="comparison-before" id="comparison-before"><img id="compare-baseline" alt="对照方法同帧图像"></div><span class="image-tag before-tag" id="before-label">WeatherCity</span><span class="image-tag after-tag">IGSW / Ours</span><div class="wipe-line" id="wipe-line"><span><i data-icon="ChevronsLeftRight"></i></span></div><input type="range" id="wipe" min="0" max="100" value="50" aria-label="两种方法的图像分界位置"></div>
+  <div class="figure-meta"><span id="compare-caption" aria-live="polite"></span><button id="full-comparison" class="text-button"><i data-icon="Maximize2"></i>完整多方法对比</button></div>
+  <div class="video-heading"><h3>连续序列</h3><label class="select-label">序列<select id="video-select"><optgroup label="Waymo · 主对比"><option value="video-waymo">雨雪 · 三视角 · 全部方法</option><option value="video-temporal-rain">雨天 · 前视角时序对比</option><option value="video-temporal-snow">雪天 · 前视角时序对比</option></optgroup><optgroup label="nuScenes · 模块消融"><option value="video-module-rain">雨天 · 两阶段模块消融</option><option value="video-module-snow">雪天 · 两阶段模块消融</option></optgroup><optgroup label="nuScenes · 组件消融"><option value="video-component-rain">雨天 · 四组件消融</option><option value="video-component-snow">雪天 · 四组件消融</option></optgroup></select></label></div>
+  <div class="video-surface"><video id="sequence-video" controls playsinline preload="none" aria-label="完整100时刻对比视频"></video></div><div class="figure-meta"><span id="video-caption">完整 100 时刻 · 10 fps · 同步多方法对比</span><button id="video-download" class="text-button"><i data-icon="Download"></i>下载当前视频</button></div>
+</section>
+
+<section id="quantitative" class="section band"><div class="shell">
+  <div class="section-heading"><div><span class="eyebrow">04 / QUANTITATIVE RESULTS</span><h2>天气表达与内容保持的平衡。</h2><p>以下数值与当前论文主表一致，使用完整序列评估。</p></div><span class="section-index">04</span></div>
+  <div class="table-toolbar"><div class="segmented" role="group" aria-label="指标数据集"><button data-quant-dataset="nuscenes" class="active" aria-pressed="true">nuScenes</button><button data-quant-dataset="waymo" aria-pressed="false">Waymo</button></div><div class="segmented" role="group" aria-label="指标天气"><button data-quant-weather="rain" class="active" aria-pressed="true">雨天</button><button data-quant-weather="snow" aria-pressed="false">雪天</button></div><button id="download-csv" class="icon-button" title="下载全部主实验数据 CSV" aria-label="下载全部主实验数据 CSV"><i data-icon="Download"></i></button></div>
+  <div class="table-scroll" tabindex="0" role="region" aria-label="定量结果表"><table><caption id="quant-caption"></caption><thead><tr><th scope="col">方法</th><th scope="col">CLIP-S ↑</th><th scope="col">CLIP-DS ↑</th><th scope="col">Sem-CS ↑</th><th scope="col">E<sub>warp</sub> ↓</th></tr></thead><tbody id="quant-body"></tbody></table></div>
+  <p class="table-note">粗体为当前列最佳值。↑ 越高越好，↓ 越低越好。nuScenes 对 10 个场景等权平均。</p><p class="result-note" id="result-note" aria-live="polite"></p>
+  <div class="metric-grid"><div><h4>CLIP-S <i data-icon="Image"></i></h4><p>相对原始图像的<br>视觉内容相似度</p></div><div><h4>CLIP-DS <i data-icon="MoveUpRight"></i></h4><p>天气编辑方向与<br>目标文本方向的一致性</p></div><div><h4>Sem-CS <i data-icon="Shapes"></i></h4><p>编辑前后场景的<br>频率加权语义 IoU</p></div><div><h4>E<sub>warp</sub> <i data-icon="Film"></i></h4><p>相邻帧光流对齐后的<br>RGB 平方误差</p></div></div>
+  <details class="technical"><summary>评估协议与范围 <i data-icon="ChevronDown"></i></summary><div class="technical-body"><p>每场景 100 个同步时刻、3 个前向相机，共 300 张图像和 297 个相机内相邻帧对。CLIP 使用 ViT-B/32；Sem-CS 使用 UPerNet–ConvNeXt-XL，统一先缩放至 400 × 225。E<sub>warp</sub> 使用 Raw GT 估计的 RAFT-Large 光流和有效掩码，各方法复用相同运动场。</p><p>主表不使用 Top-30 筛选，也不额外叠加天气粒子。实验针对对应视角的天气编辑；Stage I 使用全部观测，Stage II 每五个时刻留出一个不参与天气细化，不等同于完全未见时刻的重建评估。网站展示论文草稿数值，不是一次新的指标重算。</p></div></details>
+</div></section>
+
+<section id="consistency" class="section shell">
+  <div class="section-heading"><div><span class="eyebrow">05 / CONSISTENCY</span><h2>学到阴雨氛围，不学走建筑轮廓。</h2><p>保护教师的结构冲突区域，同时保持跨视角与时间上的场景连续性。</p></div><span class="section-index">05</span></div>
+  <div class="structure-layout"><figure><button class="image-button" data-zoom="structure" data-caption="nuScenes 场景001，固定099时刻：Raw GT、Qwen-Image、WeatherCity、IGSW，三视角结构对比" aria-label="放大三视角建筑结构对比"><img data-asset="structure" loading="lazy" alt="同一时刻三视角的原始、Qwen、WeatherCity及IGSW建筑结构对比"></button><figcaption>nuScenes · Scene 001 · Frame 099 · 三视角</figcaption></figure><div class="structure-text"><span class="mini-label">STRUCTURE PRESERVATION</span><h3>云可以变，建筑不该消失。</h3><p>Qwen 教师中的云层覆盖了原本可见的建筑。结构保护门将这一冲突转为受保护监督，让原始窗户、墙面和轮廓保留下来，同时接受教师的天气色调。</p><div class="evidence-line"><span>可靠区域</span><strong>完整教师外观</strong></div><div class="evidence-line"><span>冲突区域</span><strong>原始结构 + 天气色调</strong></div><p class="muted">结构门仍依赖语义分割与本征估计，严重遮挡或教师失真下可能失效。</p></div></div>
+  <div class="video-heading"><h3>固定时刻的帧间对比</h3><label class="select-label">序列<select id="temporal-select"><option value="temporal-nuscenes-rain">nuScenes · 雨天</option><option value="temporal-nuscenes-snow">nuScenes · 雪天</option><option value="temporal-waymo-rain">Waymo · 雨天</option><option value="temporal-waymo-snow">Waymo · 雪天</option></select></label></div><figure class="wide-figure"><button id="temporal-zoom" class="image-button" aria-label="放大帧间一致性图"><img id="temporal-image" loading="lazy" alt="49、54、59、64、69五个固定时刻的多方法前视角比较"></button><figcaption>展示固定的 49、54、59、64、69 时刻；定量 E<sub>warp</sub> 使用全部 297 个相邻帧对。</figcaption></figure>
+</section>
+
+<section id="ablation" class="section band"><div class="shell">
+  <div class="section-heading"><div><span class="eyebrow">06 / ABLATIONS</span><h2>每个阶段，解决什么问题？</h2><p>分别检验本征建模、保护监督与局部天气传输的作用。</p></div><span class="section-index">06</span></div>
+  <div class="table-toolbar"><div class="segmented" role="group" aria-label="消融类型"><button data-ablation="modules" class="active" aria-pressed="true">模块消融</button><button data-ablation="components" aria-pressed="false">组件消融</button></div><div class="segmented" role="group" aria-label="消融天气"><button data-ablation-weather="rain" class="active" aria-pressed="true">雨天</button><button data-ablation-weather="snow" aria-pressed="false">雪天</button></div><button id="ablation-csv" class="icon-button" title="下载全部消融数据 CSV" aria-label="下载全部消融数据 CSV"><i data-icon="Download"></i></button></div>
+  <p id="ablation-description" class="ablation-description"></p><div class="table-scroll" tabindex="0" role="region" aria-label="消融实验结果"><table><caption id="ablation-caption"></caption><thead><tr><th scope="col">实验</th><th scope="col">CLIP-S ↑</th><th scope="col">CLIP-DS ↑</th><th scope="col">Sem-CS ↑</th><th scope="col">E<sub>warp</sub> ↓</th></tr></thead><tbody id="ablation-body"></tbody></table></div><p class="table-note">使用完整 100 时刻评估；粗体为当前列最佳值。</p>
+  <div class="ablation-bottom"><div><h3 id="ablation-title">两阶段提供互补作用</h3><p id="ablation-insight"></p><dl class="component-key"><div><dt>a</dt><dd>共享 Albedo / Normal</dd></div><div><dt>b</dt><dd>天气特定 Irradiance / Residual</dd></div><div><dt>c</dt><dd>结构保护门</dd></div><div><dt>d</dt><dd>逐高斯天气传输</dd></div></dl><a href="#results" class="text-button" id="ablation-video-link"><i data-icon="Play"></i>对应消融视频</a></div><figure><button id="ablation-zoom" class="image-button" aria-label="放大消融实验对比图"><img id="ablation-image" loading="lazy" alt="固定099时刻三视角消融对比图"></button><figcaption>固定 099 时刻 · 左 / 中 / 右三视角</figcaption></figure></div>
+</div></section>
+
+<section class="section shell resources" id="resources"><div><span class="eyebrow">PAPER & RESOURCES</span><h2>从二维天气先验，到可渲染的动态场景。</h2><p>方法、评估协议与完整补充材料，见论文草稿。</p></div><button class="button solid paper-trigger"><i data-icon="FileText"></i>下载论文与补充材料 <i data-icon="ArrowDownToLine"></i></button></section>
+</main>
+<footer class="footer"><div class="shell footer-inner"><div><strong>IGSW</strong><p>IntrinsicGSWeather · Research project</p></div><p>依据 2026.10.12 论文草稿<br>nuScenes / Waymo · Rain / Snow</p><a class="icon-button" href="#top" title="返回顶部" aria-label="返回顶部"><i data-icon="ArrowUp"></i></a></div></footer>
+<dialog id="lightbox" aria-labelledby="lightbox-caption"><div class="dialog-bar"><span id="lightbox-caption"></span><div><button id="zoom-toggle" class="icon-button" aria-label="查看原始尺寸" title="查看原始尺寸"><i data-icon="ZoomIn"></i></button><button id="lightbox-close" class="icon-button" aria-label="关闭图片" title="关闭"><i data-icon="X"></i></button></div></div><div class="lightbox-body" id="lightbox-body"><img id="lightbox-image" alt="放大图"></div></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>const ASSETS={"nuscenes-comparison":"nuscenes-comparison.webp","nuscenes-rain-left-raw":"nuscenes-rain-left-raw.webp","nuscenes-rain-left-qwen":"nuscenes-rain-left-qwen.webp","nuscenes-rain-left-weathercity":"nuscenes-rain-left-weathercity.webp","nuscenes-rain-left-igsw":"nuscenes-rain-left-igsw.webp","nuscenes-rain-center-raw":"nuscenes-rain-center-raw.webp","nuscenes-rain-center-qwen":"nuscenes-rain-center-qwen.webp","nuscenes-rain-center-weathercity":"nuscenes-rain-center-weathercity.webp","nuscenes-rain-center-igsw":"nuscenes-rain-center-igsw.webp","nuscenes-rain-right-raw":"nuscenes-rain-right-raw.webp","nuscenes-rain-right-qwen":"nuscenes-rain-right-qwen.webp","nuscenes-rain-right-weathercity":"nuscenes-rain-right-weathercity.webp","nuscenes-rain-right-igsw":"nuscenes-rain-right-igsw.webp","nuscenes-snow-left-raw":"nuscenes-snow-left-raw.webp","nuscenes-snow-left-qwen":"nuscenes-snow-left-qwen.webp","nuscenes-snow-left-weathercity":"nuscenes-snow-left-weathercity.webp","nuscenes-snow-left-igsw":"nuscenes-snow-left-igsw.webp","nuscenes-snow-center-raw":"nuscenes-snow-center-raw.webp","nuscenes-snow-center-qwen":"nuscenes-snow-center-qwen.webp","nuscenes-snow-center-weathercity":"nuscenes-snow-center-weathercity.webp","nuscenes-snow-center-igsw":"nuscenes-snow-center-igsw.webp","nuscenes-snow-right-raw":"nuscenes-snow-right-raw.webp","nuscenes-snow-right-qwen":"nuscenes-snow-right-qwen.webp","nuscenes-snow-right-weathercity":"nuscenes-snow-right-weathercity.webp","nuscenes-snow-right-igsw":"nuscenes-snow-right-igsw.webp","waymo-comparison":"waymo-comparison.webp","waymo-rain-left-raw":"waymo-rain-left-raw.webp","waymo-rain-left-qwen":"waymo-rain-left-qwen.webp","waymo-rain-left-weathercity":"waymo-rain-left-weathercity.webp","waymo-rain-left-igsw":"waymo-rain-left-igsw.webp","waymo-rain-center-raw":"waymo-rain-center-raw.webp","waymo-rain-center-qwen":"waymo-rain-center-qwen.webp","waymo-rain-center-weathercity":"waymo-rain-center-weathercity.webp","waymo-rain-center-igsw":"waymo-rain-center-igsw.webp","waymo-rain-right-raw":"waymo-rain-right-raw.webp","waymo-rain-right-qwen":"waymo-rain-right-qwen.webp","waymo-rain-right-weathercity":"waymo-rain-right-weathercity.webp","waymo-rain-right-igsw":"waymo-rain-right-igsw.webp","waymo-snow-left-raw":"waymo-snow-left-raw.webp","waymo-snow-left-qwen":"waymo-snow-left-qwen.webp","waymo-snow-left-weathercity":"waymo-snow-left-weathercity.webp","waymo-snow-left-igsw":"waymo-snow-left-igsw.webp","waymo-snow-center-raw":"waymo-snow-center-raw.webp","waymo-snow-center-qwen":"waymo-snow-center-qwen.webp","waymo-snow-center-weathercity":"waymo-snow-center-weathercity.webp","waymo-snow-center-igsw":"waymo-snow-center-igsw.webp","waymo-snow-right-raw":"waymo-snow-right-raw.webp","waymo-snow-right-qwen":"waymo-snow-right-qwen.webp","waymo-snow-right-weathercity":"waymo-snow-right-weathercity.webp","waymo-snow-right-igsw":"waymo-snow-right-igsw.webp","pipeline":"pipeline.webp","teaser":"teaser.webp","structure":"structure.webp","temporal-nuscenes-rain":"temporal-nuscenes-rain.webp","temporal-nuscenes-snow":"temporal-nuscenes-snow.webp","temporal-waymo-rain":"temporal-waymo-rain.webp","temporal-waymo-snow":"temporal-waymo-snow.webp","module-rain":"module-rain.webp","module-snow":"module-snow.webp","component-rain":"component-rain.webp","component-snow":"component-snow.webp","video-waymo":"video-waymo.mp4","video-waymo-poster":"video-waymo-poster.webp","video-temporal-rain":"video-temporal-rain.mp4","video-temporal-rain-poster":"video-temporal-rain-poster.webp","video-temporal-snow":"video-temporal-snow.mp4","video-temporal-snow-poster":"video-temporal-snow-poster.webp","video-module-rain":"video-module-rain.mp4","video-module-rain-poster":"video-module-rain-poster.webp","video-module-snow":"video-module-snow.mp4","video-module-snow-poster":"video-module-snow-poster.webp","video-component-rain":"video-component-rain.mp4","video-component-rain-poster":"video-component-rain-poster.webp","video-component-snow":"video-component-snow.mp4","video-component-snow-poster":"video-component-snow-poster.webp","paper":"IGSW-paper.pdf"};const RESULTS={
+  "nuscenes": [
+    {
+      "name": "Qwen-Image",
+      "rain": [
+        "0.8248",
+        "0.2090",
+        "0.6748",
+        "0.0294"
+      ],
+      "snow": [
+        "0.7648",
+        "0.2692",
+        "0.6253",
+        "0.0516"
+      ]
+    },
+    {
+      "name": "FRESCO",
+      "rain": [
+        "0.8070",
+        "0.0543",
+        "0.5693",
+        "0.0174"
+      ],
+      "snow": [
+        "0.7885",
+        "0.0897",
+        "0.5443",
+        "0.0172"
+      ]
+    },
+    {
+      "name": "IntrinsicWeather",
+      "rain": [
+        "0.6682",
+        "0.1380",
+        "0.5497",
+        "0.0379"
+      ],
+      "snow": [
+        "0.6437",
+        "0.1563",
+        "0.4969",
+        "0.0529"
+      ]
+    },
+    {
+      "name": "WeatherEdit",
+      "rain": [
+        "0.8443",
+        "0.1122",
+        "0.6863",
+        "0.0148"
+      ],
+      "snow": [
+        "0.8269",
+        "0.1412",
+        "0.6839",
+        "0.0127"
+      ]
+    },
+    {
+      "name": "WeatherCity",
+      "rain": [
+        "0.8582",
+        "0.1289",
+        "0.7129",
+        "0.0023"
+      ],
+      "snow": [
+        "0.8652",
+        "0.1876",
+        "0.6772",
+        "0.0038"
+      ]
+    },
+    {
+      "name": "IGSW (Ours)",
+      "rain": [
+        "0.8718",
+        "0.1599",
+        "0.8992",
+        "0.0021"
+      ],
+      "snow": [
+        "0.8782",
+        "0.2732",
+        "0.8792",
+        "0.0028"
+      ]
+    }
+  ],
+  "waymo": [
+    {
+      "name": "Qwen-Image",
+      "rain": [
+        "0.8450",
+        "0.1942",
+        "0.5099",
+        "0.0547"
+      ],
+      "snow": [
+        "0.7971",
+        "0.2007",
+        "0.4571",
+        "0.0672"
+      ]
+    },
+    {
+      "name": "FRESCO",
+      "rain": [
+        "0.8703",
+        "0.1487",
+        "0.6376",
+        "0.0195"
+      ],
+      "snow": [
+        "0.8258",
+        "0.1557",
+        "0.6710",
+        "0.0184"
+      ]
+    },
+    {
+      "name": "IntrinsicWeather",
+      "rain": [
+        "0.6046",
+        "0.1601",
+        "0.3919",
+        "0.0224"
+      ],
+      "snow": [
+        "0.7317",
+        "0.1929",
+        "0.5676",
+        "0.0273"
+      ]
+    },
+    {
+      "name": "WeatherEdit",
+      "rain": [
+        "0.9015",
+        "0.2095",
+        "0.8036",
+        "0.0118"
+      ],
+      "snow": [
+        "0.8532",
+        "0.2055",
+        "0.8025",
+        "0.0106"
+      ]
+    },
+    {
+      "name": "WeatherCity",
+      "rain": [
+        "0.7773",
+        "0.1375",
+        "0.7398",
+        "0.0090"
+      ],
+      "snow": [
+        "0.8002",
+        "0.0937",
+        "0.6633",
+        "0.0101"
+      ]
+    },
+    {
+      "name": "IGSW (Ours)",
+      "rain": [
+        "0.9031",
+        "0.2940",
+        "0.8723",
+        "0.0009"
+      ],
+      "snow": [
+        "0.8971",
+        "0.2869",
+        "0.8050",
+        "0.0019"
+      ]
+    }
+  ],
+  "modules": [
+    {
+      "name": "WeatherCity",
+      "rain": [
+        "0.858270",
+        "0.128999",
+        "0.712923",
+        "0.002399"
+      ],
+      "snow": [
+        "0.865202",
+        "0.187677",
+        "0.677263",
+        "0.003811"
+      ]
+    },
+    {
+      "name": "仅 Stage I",
+      "rain": [
+        "0.858933",
+        "0.132594",
+        "0.714228",
+        "0.002265"
+      ],
+      "snow": [
+        "0.866956",
+        "0.188946",
+        "0.677516",
+        "0.003186"
+      ]
+    },
+    {
+      "name": "仅 Stage II",
+      "rain": [
+        "0.866129",
+        "0.127921",
+        "0.898980",
+        "0.001632"
+      ],
+      "snow": [
+        "0.864229",
+        "0.220130",
+        "0.877846",
+        "0.002207"
+      ]
+    },
+    {
+      "name": "IGSW · 两阶段",
+      "rain": [
+        "0.87186",
+        "0.159925",
+        "0.89925",
+        "0.002152"
+      ],
+      "snow": [
+        "0.878254",
+        "0.273236",
+        "0.879220",
+        "0.002844"
+      ]
+    }
+  ],
+  "components": [
+    {
+      "name": "WeatherCity",
+      "rain": [
+        "0.858270",
+        "0.128999",
+        "0.712923",
+        "0.002399"
+      ],
+      "snow": [
+        "0.865202",
+        "0.187677",
+        "0.677263",
+        "0.003811"
+      ]
+    },
+    {
+      "name": "w/o a · 共享本征",
+      "rain": [
+        "0.861298",
+        "0.140355",
+        "0.888302",
+        "0.002114"
+      ],
+      "snow": [
+        "0.849778",
+        "0.266639",
+        "0.871814",
+        "0.002821"
+      ]
+    },
+    {
+      "name": "w/o b · 天气特定",
+      "rain": [
+        "0.876341",
+        "0.136436",
+        "0.892923",
+        "0.002052"
+      ],
+      "snow": [
+        "0.861993",
+        "0.262443",
+        "0.878149",
+        "0.002831"
+      ]
+    },
+    {
+      "name": "w/o c · 结构门",
+      "rain": [
+        "0.847179",
+        "0.155122",
+        "0.861325",
+        "0.002178"
+      ],
+      "snow": [
+        "0.838087",
+        "0.280840",
+        "0.794376",
+        "0.003027"
+      ]
+    },
+    {
+      "name": "w/o d · 天气传输",
+      "rain": [
+        "0.851419",
+        "0.129318",
+        "0.882965",
+        "0.001655"
+      ],
+      "snow": [
+        "0.882579",
+        "0.191582",
+        "0.871025",
+        "0.002463"
+      ]
+    },
+    {
+      "name": "IGSW · 完整模型",
+      "rain": [
+        "0.87186",
+        "0.159925",
+        "0.89925",
+        "0.002152"
+      ],
+      "snow": [
+        "0.878254",
+        "0.273236",
+        "0.879220",
+        "0.002844"
+      ]
+    }
+  ]
+};const ICONS={"FileText":[["path",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"}],["path",{"d":"M14 2v5a1 1 0 0 0 1 1h5"}],["path",{"d":"M10 9H8"}],["path",{"d":"M16 13H8"}],["path",{"d":"M16 17H8"}]],"Play":[["path",{"d":"M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"}]],"CloudRain":[["path",{"d":"M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"}],["path",{"d":"M16 14v6"}],["path",{"d":"M8 14v6"}],["path",{"d":"M12 16v6"}]],"Snowflake":[["path",{"d":"m10 20-1.25-2.5L6 18"}],["path",{"d":"M10 4 8.75 6.5 6 6"}],["path",{"d":"m14 20 1.25-2.5L18 18"}],["path",{"d":"m14 4 1.25 2.5L18 6"}],["path",{"d":"m17 21-3-6h-4"}],["path",{"d":"m17 3-3 6 1.5 3"}],["path",{"d":"M2 12h6.5L10 9"}],["path",{"d":"m20 10-1.5 2 1.5 2"}],["path",{"d":"M22 12h-6.5L14 15"}],["path",{"d":"m4 10 1.5 2L4 14"}],["path",{"d":"m7 21 3-6-1.5-3"}],["path",{"d":"m7 3 3 6h4"}]],"ChevronDown":[["path",{"d":"m6 9 6 6 6-6"}]],"ChevronsLeftRight":[["path",{"d":"m9 7-5 5 5 5"}],["path",{"d":"m15 7 5 5-5 5"}]],"Maximize2":[["path",{"d":"M15 3h6v6"}],["path",{"d":"m21 3-7 7"}],["path",{"d":"m3 21 7-7"}],["path",{"d":"M9 21H3v-6"}]],"Download":[["path",{"d":"M12 15V3"}],["path",{"d":"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}],["path",{"d":"m7 10 5 5 5-5"}]],"Image":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2","ry":"2"}],["circle",{"cx":"9","cy":"9","r":"2"}],["path",{"d":"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"}]],"MoveUpRight":[["path",{"d":"M13 5H19V11"}],["path",{"d":"M19 5L5 19"}]],"Shapes":[["path",{"d":"M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z"}],["rect",{"x":"3","y":"14","width":"7","height":"7","rx":"1"}],["circle",{"cx":"17.5","cy":"17.5","r":"3.5"}]],"Film":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M7 3v18"}],["path",{"d":"M3 7.5h4"}],["path",{"d":"M3 12h18"}],["path",{"d":"M3 16.5h4"}],["path",{"d":"M17 3v18"}],["path",{"d":"M17 7.5h4"}],["path",{"d":"M17 16.5h4"}]],"ArrowDownToLine":[["path",{"d":"M12 17V3"}],["path",{"d":"m6 11 6 6 6-6"}],["path",{"d":"M19 21H5"}]],"ArrowUp":[["path",{"d":"m5 12 7-7 7 7"}],["path",{"d":"M12 19V5"}]],"ZoomIn":[["circle",{"cx":"11","cy":"11","r":"8"}],["line",{"x1":"21","x2":"16.65","y1":"21","y2":"16.65"}],["line",{"x1":"11","x2":"11","y1":"8","y2":"14"}],["line",{"x1":"8","x2":"14","y1":"11","y2":"11"}]],"X":[["path",{"d":"M18 6 6 18"}],["path",{"d":"m6 6 12 12"}]]};</script>
+<script>"use strict";
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => [...document.querySelectorAll(selector)];
+const state = { scene: "nuscenes", weather: "rain", view: "center", method: "weathercity", quantDataset: "nuscenes", quantWeather: "rain", ablation: "modules", ablationWeather: "rain" };
+const names = { nuscenes: "nuScenes", waymo: "Waymo", rain: "雨天", snow: "雪天", left: "左视角", center: "中视角", right: "右视角", raw: "原始 Raw GT", qwen: "Qwen-Image", weathercity: "WeatherCity" };
+const videoLabels = {
+  "video-waymo": "Waymo · Scene 019 · 雨雪三视角 · 全方法比较",
+  "video-temporal-rain": "Waymo · Scene 019 · 雨天前视角 · 全方法比较",
+  "video-temporal-snow": "Waymo · Scene 019 · 雪天前视角 · 全方法比较",
+  "video-module-rain": "nuScenes · Scene 001 · 雨天模块消融",
+  "video-module-snow": "nuScenes · Scene 001 · 雪天模块消融",
+  "video-component-rain": "nuScenes · Scene 001 · 雨天组件消融",
+  "video-component-snow": "nuScenes · Scene 001 · 雪天组件消融"
+};
+
+function renderIcons(root = document) {
+  root.querySelectorAll("[data-icon]").forEach((node) => {
+    const icon = ICONS[node.dataset.icon];
+    if (!icon) return;
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+    icon.forEach(([tag, attrs]) => {
+      const el = document.createElementNS(svg.namespaceURI, tag);
+      Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+      svg.append(el);
+    });
+    node.replaceWith(svg);
+  });
+}
+function setActive(selector, value, key) {
+  $$(selector).forEach((button) => {
+    const active = button.dataset[key] === value;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+}
+let toastTimer;
+function toast(message) {
+  $("#toast").textContent = message;
+  $("#toast").classList.add("visible");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $("#toast").classList.remove("visible"), 3200);
+}
+function renderComparison() {
+  const base = `${state.scene}-${state.weather}-${state.view}-`;
+  $("#compare-ours").src = ASSETS[base + "igsw"];
+  $("#compare-ours").alt = `IGSW ${names[state.weather]}，${names[state.scene]} ${names[state.view]}，049 时刻`;
+  $("#compare-baseline").src = ASSETS[base + state.method];
+  $("#compare-baseline").alt = `${names[state.method]}，同一时刻及视角`;
+  $("#before-label").textContent = names[state.method];
+  $("#compare-caption").textContent = `${names[state.scene]} · Scene ${state.scene === "nuscenes" ? "001" : "019"} · Frame 049 · ${names[state.view]} · ${names[state.weather]}`;
+  $("#comparison").style.aspectRatio = state.scene === "nuscenes" ? "674 / 384" : "674 / 448";
+}
+function renderWipe() {
+  const v = Number($("#wipe").value);
+  $("#comparison-before").style.clipPath = `inset(0 ${100 - v}% 0 0)`;
+  $("#wipe-line").style.left = `${v}%`;
+  $("#wipe").setAttribute("aria-valuetext", `对照图占 ${v}%，IGSW 占 ${100 - v}%`);
+}
+function renderTable(target, rows, weather) {
+  const best = [0, 1, 2, 3].map((column) => {
+    const values = rows.map((r) => Number(r[weather][column]));
+    return column === 3 ? Math.min(...values) : Math.max(...values);
+  });
+  target.replaceChildren();
+  rows.forEach((row) => {
+    const tr = document.createElement("tr");
+    if (row.name.startsWith("IGSW")) tr.classList.add("ours");
+    const th = document.createElement("th");
+    th.scope = "row";
+    th.textContent = row.name;
+    tr.append(th);
+    row[weather].forEach((value, column) => {
+      const td = document.createElement("td");
+      td.textContent = value;
+      if (Number(value) === best[column]) td.className = "best";
+      tr.append(td);
+    });
+    target.append(tr);
+  });
+}
+function renderQuant() {
+  const rows = RESULTS[state.quantDataset];
+  renderTable($("#quant-body"), rows, state.quantWeather);
+  $("#quant-caption").textContent = `${names[state.quantDataset]} · ${names[state.quantWeather]} · 完整 100 时刻 / 场景${state.quantDataset === "nuscenes" ? " · 10 场景平均" : ""}`;
+  const ours = rows.at(-1)[state.quantWeather];
+  const note = state.quantDataset === "nuscenes" && state.quantWeather === "rain"
+    ? "Qwen-Image 的 CLIP-DS 为本组最高；IGSW 的优势在于内容、语义与时序保持的平衡。"
+    : "IGSW 在当前论文的这一组对比中，四项指标均为最优。";
+  $("#result-note").textContent = `IGSW：CLIP-S ${ours[0]}，Sem-CS ${ours[2]}，Ewarp ${ours[3]}。${note}`;
+}
+function renderAblation() {
+  renderTable($("#ablation-body"), RESULTS[state.ablation], state.ablationWeather);
+  const modules = state.ablation === "modules";
+  $("#ablation-caption").textContent = `${modules ? "两阶段模块" : "四组件"}消融 · ${names[state.ablationWeather]} · 完整 100 时刻`;
+  $("#ablation-description").textContent = modules
+    ? "比较 WeatherCity、仅本征建模、仅天气细化与完整两阶段模型，区分表示学习和后续外观优化的贡献。"
+    : "a、b 在第一阶段从初始化开始重新训练消融；c、d 在第二阶段分别移除结构保护门或逐高斯天气传输。";
+  $("#ablation-title").textContent = modules ? "两阶段提供互补作用" : "完整模型平衡不同目标";
+  $("#ablation-insight").textContent = modules
+    ? "单独 Stage I 的视觉与指标变化较小。Stage II 强化天气外观并获得更低的时序误差；完整模型在三个相似性与方向指标上更优，但不声称每项消融的所有指标都更差。"
+    : "移除结构门会降低 CLIP-S 与 Sem-CS；移除天气传输会削弱天气方向表达。部分变体的内容相似度或时序误差更好，说明天气强度、结构保持与平滑程度之间存在权衡。";
+  $("#ablation-image").src = ASSETS[`${modules ? "module" : "component"}-${state.ablationWeather}`];
+  $("#ablation-image").alt = `${names[state.ablationWeather]}${modules ? "模块" : "组件"}消融：固定099时刻三视角比较`;
+}
+function showImage(key, caption) {
+  const dlg = $("#lightbox");
+  $("#lightbox-image").src = ASSETS[key];
+  $("#lightbox-image").alt = caption;
+  $("#lightbox-caption").textContent = caption;
+  $("#lightbox-body").classList.remove("actual");
+  $("#zoom-toggle").setAttribute("aria-pressed", "false");
+  $("#zoom-toggle").title = "查看原始尺寸";
+  if (!dlg.open) dlg.showModal();
+  document.body.style.overflow = "hidden";
+}
+
+// Data URLs remain self-contained; only the selected video/PDF is decoded into a Blob.
+const mediaUrls = new Map();
+function mediaUrl(key) {
+  if (mediaUrls.has(key)) return mediaUrls.get(key);
+  const source = ASSETS[key];
+  if (!source.startsWith("data:")) return source;
+  const [header, data] = source.split(",", 2);
+  const binary = atob(data);
+  const chunks = [];
+  for (let offset = 0; offset < binary.length; offset += 1048576) {
+    const part = binary.slice(offset, offset + 1048576);
+    const bytes = new Uint8Array(part.length);
+    for (let i = 0; i < part.length; i++) bytes[i] = part.charCodeAt(i);
+    chunks.push(bytes);
+  }
+  const url = URL.createObjectURL(new Blob(chunks, { type: header.slice(5).split(";")[0] }));
+  mediaUrls.set(key, url);
+  return url;
+}
+function selectVideo(key) {
+  const video = $("#sequence-video");
+  video.pause();
+  $("#video-select").value = key;
+  video.poster = ASSETS[key + "-poster"];
+  video.src = mediaUrl(key);
+  video.load();
+  $("#video-caption").textContent = `${videoLabels[key]} · 完整 100 时刻`;
+}
+function download(url, filename) {
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+}
+function downloadCsv(tableNames, filename) {
+  const lines = [["Table", "Weather", "Method", "CLIP-S", "CLIP-DS", "Sem-CS", "Ewarp"]];
+  tableNames.forEach((table) => ["rain", "snow"].forEach((weather) => RESULTS[table].forEach((r) => lines.push([table, weather, r.name, ...r[weather]]))));
+  const text = "\uFEFF" + lines.map((row) => row.map((value) => '"' + String(value).replaceAll('"', '""') + '"').join(",")).join("\r\n");
+  const url = URL.createObjectURL(new Blob([text], { type: "text/csv;charset=utf-8" }));
+  download(url, filename);
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+renderIcons();
+$$('[data-asset]').forEach((img) => { img.src = ASSETS[img.dataset.asset]; });
+$$('[data-hero]').forEach((button) => button.addEventListener("click", () => {
+  const weather = button.dataset.hero;
+  setActive("[data-hero]", weather, "hero");
+  $$(".hero-views img").forEach((img, index) => img.src = ASSETS[`nuscenes-${weather}-${["left", "center", "right"][index]}-igsw`]);
+  $("#hero-caption").textContent = `nuScenes · 001 · Frame 049 · IGSW ${names[weather]}`;
+}));
+for (const [selector, dataKey, stateKey] of [["[data-scene]", "scene", "scene"], ["[data-weather]", "weather", "weather"], ["[data-view]", "view", "view"]]) {
+  $$(selector).forEach((button) => button.addEventListener("click", () => {
+    state[stateKey] = button.dataset[dataKey];
+    setActive(selector, state[stateKey], dataKey);
+    renderComparison();
+  }));
+}
+$("#comparison-method").addEventListener("change", (event) => { state.method = event.target.value; renderComparison(); });
+$("#wipe").addEventListener("input", renderWipe);
+$("#full-comparison").addEventListener("click", () => showImage(state.scene + "-comparison", `${names[state.scene]} · 049时刻 · 雨雪三视角完整比较`));
+for (const [selector, dataKey, stateKey, render] of [["[data-quant-dataset]", "quantDataset", "quantDataset", renderQuant], ["[data-quant-weather]", "quantWeather", "quantWeather", renderQuant], ["[data-ablation]", "ablation", "ablation", renderAblation], ["[data-ablation-weather]", "ablationWeather", "ablationWeather", renderAblation]]) {
+  $$(selector).forEach((button) => button.addEventListener("click", () => {
+    state[stateKey] = button.dataset[dataKey];
+    setActive(selector, state[stateKey], dataKey);
+    render();
+  }));
+}
+$$('[data-zoom]').forEach((button) => button.addEventListener("click", () => showImage(button.dataset.zoom, button.dataset.caption)));
+$("#lightbox-close").addEventListener("click", () => $("#lightbox").close());
+$("#lightbox").addEventListener("close", () => { document.body.style.overflow = ""; });
+$("#lightbox").addEventListener("click", (event) => { if (event.target === $("#lightbox")) $("#lightbox").close(); });
+$("#zoom-toggle").addEventListener("click", () => {
+  const actual = $("#lightbox-body").classList.toggle("actual");
+  $("#zoom-toggle").setAttribute("aria-pressed", String(actual));
+  $("#zoom-toggle").title = actual ? "适应窗口" : "查看原始尺寸";
+});
+$("#video-select").addEventListener("change", (event) => selectVideo(event.target.value));
+$("#video-download").addEventListener("click", () => { const key = $("#video-select").value; download(mediaUrl(key), "IGSW-" + key + ".mp4"); });
+$("#sequence-video").addEventListener("error", () => toast("视频未能加载，请下载当前视频后播放。"));
+$("#temporal-select").addEventListener("change", (event) => { $("#temporal-image").src = ASSETS[event.target.value]; });
+$("#temporal-zoom").addEventListener("click", () => showImage($("#temporal-select").value, $("#temporal-select").selectedOptions[0].textContent + " · 五个固定时刻对比"));
+$("#ablation-zoom").addEventListener("click", () => showImage(`${state.ablation === "modules" ? "module" : "component"}-${state.ablationWeather}`, $("#ablation-caption").textContent + " · 固定099时刻"));
+$("#ablation-video-link").addEventListener("click", () => selectVideo(`video-${state.ablation === "modules" ? "module" : "component"}-${state.ablationWeather}`));
+$("#download-csv").addEventListener("click", () => downloadCsv(["nuscenes", "waymo"], "IGSW-main-results.csv"));
+$("#ablation-csv").addEventListener("click", () => downloadCsv(["modules", "components"], "IGSW-ablation-results.csv"));
+$$('.paper-trigger').forEach((button) => button.addEventListener("click", async () => {
+  button.disabled = true;
+  toast("正在准备论文 PDF…");
+  await new Promise((resolve) => setTimeout(resolve, 60));
+  try { download(mediaUrl("paper"), "IGSW-paper-and-supplement.pdf"); toast("论文 PDF 已交给浏览器下载。"); }
+  finally { button.disabled = false; }
+}));
+if ("IntersectionObserver" in window) {
+  const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
+    if (!entry.isIntersecting) return;
+    $$("nav a").forEach((a) => a.classList.toggle("current", a.getAttribute("href") === "#" + entry.target.id));
+  }), { rootMargin: "-15% 0px -65% 0px" });
+  $$("main section[id]").forEach((section) => observer.observe(section));
+}
+renderComparison();
+renderWipe();
+renderQuant();
+renderAblation();
+$("#temporal-image").src = ASSETS["temporal-nuscenes-rain"];
+selectVideo("video-waymo");
+window.addEventListener("pagehide", () => mediaUrls.forEach((url) => URL.revokeObjectURL(url)));
+</script>
+</body></html>
