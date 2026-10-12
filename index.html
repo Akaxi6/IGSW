@@ -58,9 +58,19 @@ SOFTWARE.
 @media(max-width:1050px){.shell,.nav-shell{width:calc(100% - 48px)}.brand-note,.brand-divider{display:none}.overview-grid{gap:45px}.overview-facts b{min-width:100px;font-size:24px}.overview-facts>div{gap:15px}.method-grid{gap:30px}.method-grid article+article{padding-left:28px}.viewer-toolbar .select-label{margin-left:0}.structure-layout{gap:30px}.stage-label{display:block}.stage-label span{display:block;margin-top:4px}.ablation-bottom{gap:36px}.resources{gap:25px}.resources h2{font-size:24px}.hero h1{font-size:78px}.hero h1 span{font-size:28px}}
 @media(max-width:720px){:root{--body:16px}.shell,.nav-shell{width:calc(100% - 32px)}.header{height:62px}.nav-shell{gap:12px}.brand{font-size:22px}nav{gap:14px;font-size:12px}nav a[href="#overview"],nav a[href="#consistency"]{display:none}.header .icon-button{width:32px;height:32px;flex-basis:32px}.hero{height:550px;min-height:450px;max-height:calc(100svh - 110px)}.hero-views{grid-template-columns:1fr}.hero-views img:first-child,.hero-views img:last-child{display:none}.hero-views img{object-position:50% center}.hero-content{padding-top:36px}.hero h1{font-size:64px}.hero h1 span{font-size:24px;line-height:1.5;margin-top:15px}.hero .eyebrow{font-size:9px;max-width:280px}.hero-deck{font-size:14px;margin-top:12px}.hero-links{margin-top:24px}.button{padding:9px 16px;font-size:13px;min-height:44px}.hero-bottom{font-size:9px;bottom:15px;gap:12px;align-items:end}.hero-bottom>span{max-width:170px;line-height:1.6}.hero-bottom .segmented button{padding:7px 11px;min-height:36px}.section{padding-top:54px;padding-bottom:54px}h2{font-size:26px}.section-heading{gap:14px;margin-bottom:26px}.section-heading p{font-size:14px}.section-index{font-size:12px;min-width:28px}.eyebrow{font-size:10px;margin-bottom:12px}.overview-grid,.method-grid,.structure-layout,.ablation-bottom,.technical-body{grid-template-columns:1fr;gap:26px}.lead-text{font-size:16px}.overview-facts>div{padding:16px 0}.overview-facts b{min-width:130px}.overview-facts span{font-size:12px}.teaser{margin-top:30px}.pipeline{padding:6px}.method-grid{margin-top:28px}.method-grid article+article{border-left:0;border-top:1px solid var(--line);padding:27px 0 0}.method-grid h3{font-size:21px}.stage-label{display:flex}.stage-label span{margin:0;font-size:10px}.technical-body{gap:16px;font-size:13px}.formula{font-size:16px}.viewer-toolbar,.table-toolbar{gap:10px}.segmented button{font-size:12px;padding:7px 12px;min-height:38px}.select-label{font-size:11px}select{font-size:12px;padding:7px 26px 7px 9px;min-height:38px}.viewer-toolbar .select-label{width:100%;justify-content:space-between}.viewer-toolbar .select-label select{flex:1;max-width:70%}.comparison{border-radius:2px}.image-tag{font-size:10px;top:9px;padding:3px 7px}.before-tag{left:9px}.after-tag{right:9px}.wipe-line>span{width:34px;height:34px}.figure-meta{align-items:start;font-size:10px;gap:10px}.text-button{font-size:11px}.figure-meta>span{flex:1}.figure-meta>.text-button{flex-shrink:0}.video-heading{margin-top:34px;align-items:start;flex-direction:column;gap:14px}.video-heading h3{font-size:21px}.video-heading .select-label{width:100%}.video-heading select{flex:1;min-width:0}.video-surface video{max-height:600px}table{font-size:14px}th,td{padding:12px 11px}tbody th{font-size:12px}thead th{font-size:11px}.table-note{font-size:11px}.result-note{font-size:14px}.metric-grid{grid-template-columns:1fr 1fr;gap:20px;margin-top:30px}.metric-grid h4{font-size:13px}.metric-grid p{font-size:12px}.structure-text h3{font-size:24px}.structure-text p{font-size:15px}.structure-layout figure{order:2}.structure-text{order:1}.ablation-bottom>div{position:static;padding:0}.ablation-bottom h3{font-size:23px}.ablation-bottom p{font-size:14px}.ablation-bottom figure{max-width:100%;margin:0}.component-key{margin:20px 0}.resources{display:block}.resources h2{font-size:24px}.resources .button{margin-top:24px}.footer-inner{gap:20px;flex-wrap:wrap}.footer-inner>p{margin:0;font-size:10px}.footer-inner .icon-button{margin-left:auto}.footer p{font-size:10px}.dialog-bar{padding:8px 10px;height:76px;gap:10px}.dialog-bar>span{font-size:11px}.lightbox-body{height:calc(100% - 76px);padding:6px}.dialog-bar .icon-button{width:32px;height:32px;flex-basis:32px}figcaption{font-size:10px}}
 .video-surface,.video-surface video{background:#fff}
-/* Keep only the results comparison compact; full-size media remains available. */
-@media(min-width:1051px){#results .comparison,#results .comparison+.figure-meta{width:50%;margin-inline:auto}}
-@media(min-width:721px) and (max-width:1050px){#results .comparison,#results .comparison+.figure-meta{width:min(100%,600px);margin-inline:auto}}
+.comparison-matrix{overflow-x:auto;padding:4px;margin-inline:-4px;scrollbar-color:#91a59a #edf1ed}
+.comparison-matrix:focus-visible{outline:2px solid var(--green);outline-offset:4px}
+.comparison-columns,.comparison-views{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.comparison-columns,.comparison-row{min-width:720px}
+.comparison-columns{padding-bottom:10px;border-bottom:1px solid var(--line);font-size:13px;font-weight:600;text-align:center;color:var(--muted)}
+.comparison-row{padding-top:18px}
+.comparison-row+.comparison-row{margin-top:20px;border-top:1px solid var(--line)}
+.comparison-row h3{display:flex;align-items:center;gap:10px;font-size:17px;margin-bottom:12px}
+.comparison-row h3 span{font-size:12px;color:var(--muted);font-weight:400}
+.comparison-matrix .image-tag{top:10px;padding:3px 8px;font-size:11px;line-height:1.6}
+.comparison-matrix .before-tag{left:10px}.comparison-matrix .after-tag{right:10px}
+.comparison-matrix .wipe-line>span{width:32px;height:32px}.comparison-matrix .wipe-line svg{width:17px;height:17px}
+@media(max-width:720px){.comparison-columns,.comparison-views{gap:10px}.comparison-row h3{font-size:15px}.comparison-row{padding-top:14px}.comparison-row+.comparison-row{margin-top:16px}.comparison-matrix .image-tag{top:7px;font-size:10px;padding:3px 6px}.comparison-matrix .before-tag{left:7px}.comparison-matrix .after-tag{right:7px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 @media print{.header,.hero,.video-surface,.viewer-toolbar,.resources,.footer,.icon-button,.text-button{display:none}.section{padding:20px 0}.shell{width:100%}.band{background:white}.ablation-bottom>div{position:static}body{font-size:11pt}.table-scroll{overflow:visible}}
 </style>
@@ -100,8 +110,8 @@ SOFTWARE.
 
 <section id="results" class="section shell">
   <div class="section-heading"><div><span class="eyebrow">03 / VISUAL RESULTS</span><h2>同一场景，同一视角，不同天气。</h2><p>对应帧展示，完整对比图和序列视频保留所有比较方法。</p></div><span class="section-index">03</span></div>
-  <div class="viewer-toolbar"><div class="segmented" role="group" aria-label="可视化数据集"><button data-scene="nuscenes" class="active" aria-pressed="true">nuScenes</button><button data-scene="waymo" aria-pressed="false">Waymo</button></div><div class="segmented" role="group" aria-label="可视化天气"><button data-weather="rain" class="active" aria-pressed="true"><i data-icon="CloudRain"></i>雨天</button><button data-weather="snow" aria-pressed="false"><i data-icon="Snowflake"></i>雪天</button></div><div class="segmented" role="group" aria-label="相机视角"><button data-view="left" aria-pressed="false">左</button><button data-view="center" class="active" aria-pressed="true">中</button><button data-view="right" aria-pressed="false">右</button></div><label class="select-label">对照<select id="comparison-method"><option value="weathercity">WeatherCity</option><option value="qwen">Qwen-Image</option><option value="raw">原始 Raw GT</option></select></label></div>
-  <div class="comparison" id="comparison"><img id="compare-ours" alt="IGSW 对应视角天气渲染"><div class="comparison-before" id="comparison-before"><img id="compare-baseline" alt="对照方法同帧图像"></div><span class="image-tag before-tag" id="before-label">WeatherCity</span><span class="image-tag after-tag">IGSW / Ours</span><div class="wipe-line" id="wipe-line"><span><i data-icon="ChevronsLeftRight"></i></span></div><input type="range" id="wipe" min="0" max="100" value="50" aria-label="两种方法的图像分界位置"></div>
+  <div class="viewer-toolbar"><div class="segmented" role="group" aria-label="可视化数据集"><button data-scene="nuscenes" class="active" aria-pressed="true">nuScenes</button><button data-scene="waymo" aria-pressed="false">Waymo</button></div><div class="segmented" role="group" aria-label="可视化天气"><button data-weather="rain" class="active" aria-pressed="true"><i data-icon="CloudRain"></i>雨天</button><button data-weather="snow" aria-pressed="false"><i data-icon="Snowflake"></i>雪天</button></div></div>
+  <div class="comparison-matrix" id="comparison-grid" role="region" aria-label="三种对照方法与 IGSW 的左中右三视角比较" tabindex="0"></div>
   <div class="figure-meta"><span id="compare-caption" aria-live="polite"></span><button id="full-comparison" class="text-button"><i data-icon="Maximize2"></i>完整多方法对比</button></div>
   <div class="video-heading"><h3>连续序列</h3><label class="select-label">序列<select id="video-select"><optgroup label="Waymo · 主对比"><option value="video-waymo">雨雪 · 三视角 · 全部方法</option><option value="video-temporal-rain">雨天 · 前视角时序对比</option><option value="video-temporal-snow">雪天 · 前视角时序对比</option></optgroup><optgroup label="nuScenes · 模块消融"><option value="video-module-rain">雨天 · 两阶段模块消融</option><option value="video-module-snow">雪天 · 两阶段模块消融</option></optgroup><optgroup label="nuScenes · 组件消融"><option value="video-component-rain">雨天 · 四组件消融</option><option value="video-component-snow">雪天 · 四组件消融</option></optgroup></select></label></div>
   <div class="video-surface"><video id="sequence-video" controls playsinline preload="none" aria-label="完整100时刻对比视频"></video></div><div class="figure-meta"><span id="video-caption">完整 100 时刻 · 10 fps · 同步多方法对比</span><button id="video-download" class="text-button"><i data-icon="Download"></i>下载当前视频</button></div>
@@ -477,7 +487,7 @@ SOFTWARE.
 <script>"use strict";
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const state = { scene: "nuscenes", weather: "rain", view: "center", method: "weathercity", quantDataset: "nuscenes", quantWeather: "rain", ablation: "modules", ablationWeather: "rain" };
+const state = { scene: "nuscenes", weather: "rain", quantDataset: "nuscenes", quantWeather: "rain", ablation: "modules", ablationWeather: "rain" };
 const names = { nuscenes: "nuScenes", waymo: "Waymo", rain: "雨天", snow: "雪天", left: "左视角", center: "中视角", right: "右视角", raw: "原始 Raw GT", qwen: "Qwen-Image", weathercity: "WeatherCity" };
 const videoLabels = {
   "video-waymo": "Waymo · Scene 019 · 雨雪三视角 · 全方法比较",
@@ -518,21 +528,50 @@ function toast(message) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => $("#toast").classList.remove("visible"), 3200);
 }
-function renderComparison() {
-  const base = `${state.scene}-${state.weather}-${state.view}-`;
-  $("#compare-ours").src = ASSETS[base + "igsw"];
-  $("#compare-ours").alt = `IGSW ${names[state.weather]}，${names[state.scene]} ${names[state.view]}，049 时刻`;
-  $("#compare-baseline").src = ASSETS[base + state.method];
-  $("#compare-baseline").alt = `${names[state.method]}，同一时刻及视角`;
-  $("#before-label").textContent = names[state.method];
-  $("#compare-caption").textContent = `${names[state.scene]} · Scene ${state.scene === "nuscenes" ? "001" : "019"} · Frame 049 · ${names[state.view]} · ${names[state.weather]}`;
-  $("#comparison").style.aspectRatio = state.scene === "nuscenes" ? "674 / 384" : "674 / 448";
+function createComparisonGrid() {
+  const grid = $("#comparison-grid");
+  const views = ["left", "center", "right"];
+  grid.innerHTML = `<div class="comparison-columns">${views.map(view => `<span>${names[view]}</span>`).join("")}</div>`;
+  for (const method of ["raw", "qwen", "weathercity"]) {
+    const row = document.createElement("section");
+    row.className = "comparison-row";
+    row.dataset.method = method;
+    row.setAttribute("aria-labelledby", `comparison-heading-${method}`);
+    row.innerHTML = `<h3 id="comparison-heading-${method}">${names[method]} <span>vs. IGSW</span></h3><div class="comparison-views">${views.map(view => `
+      <div class="comparison" data-compare-method="${method}" data-compare-view="${view}">
+        <img class="compare-ours" alt="">
+        <div class="comparison-before"><img class="compare-baseline" alt=""></div>
+        <span class="image-tag before-tag">${names[method]}</span><span class="image-tag after-tag">IGSW</span>
+        <div class="wipe-line"><span><i data-icon="ChevronsLeftRight"></i></span></div>
+        <input type="range" min="0" max="100" value="50" aria-label="${names[method]} 与 IGSW，${names[view]}图像分界位置">
+      </div>`).join("")}</div>`;
+    grid.append(row);
+  }
+  grid.querySelectorAll(".comparison").forEach(cell => {
+    cell.querySelector("input").addEventListener("input", () => renderWipe(cell));
+    renderWipe(cell);
+  });
 }
-function renderWipe() {
-  const v = Number($("#wipe").value);
-  $("#comparison-before").style.clipPath = `inset(0 ${100 - v}% 0 0)`;
-  $("#wipe-line").style.left = `${v}%`;
-  $("#wipe").setAttribute("aria-valuetext", `对照图占 ${v}%，IGSW 占 ${100 - v}%`);
+function renderComparison() {
+  $$("#comparison-grid .comparison").forEach(cell => {
+    const view = cell.dataset.compareView;
+    const method = cell.dataset.compareMethod;
+    const base = `${state.scene}-${state.weather}-${view}-`;
+    const context = `${names[state.scene]} ${names[state.weather]}，${names[view]}，049 时刻`;
+    cell.querySelector(".compare-ours").src = ASSETS[base + "igsw"];
+    cell.querySelector(".compare-ours").alt = `IGSW，${context}`;
+    cell.querySelector(".compare-baseline").src = ASSETS[base + method];
+    cell.querySelector(".compare-baseline").alt = `${names[method]}，${context}`;
+    cell.style.aspectRatio = state.scene === "nuscenes" ? "674 / 384" : "674 / 448";
+  });
+  $("#compare-caption").textContent = `${names[state.scene]} · Scene ${state.scene === "nuscenes" ? "001" : "019"} · Frame 049 · 左 / 中 / 右三视角 · ${names[state.weather]}`;
+}
+function renderWipe(cell) {
+  const input = cell.querySelector("input");
+  const v = Number(input.value);
+  cell.querySelector(".comparison-before").style.clipPath = `inset(0 ${100 - v}% 0 0)`;
+  cell.querySelector(".wipe-line").style.left = `${v}%`;
+  input.setAttribute("aria-valuetext", `对照图占 ${v}%，IGSW 占 ${100 - v}%`);
 }
 function renderTable(target, rows, weather) {
   const best = [0, 1, 2, 3].map((column) => {
@@ -637,6 +676,7 @@ function downloadCsv(tableNames, filename) {
   setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 
+createComparisonGrid();
 renderIcons();
 $$('[data-asset]').forEach((img) => { img.src = ASSETS[img.dataset.asset]; });
 $$('[data-hero]').forEach((button) => button.addEventListener("click", () => {
@@ -645,15 +685,13 @@ $$('[data-hero]').forEach((button) => button.addEventListener("click", () => {
   $$(".hero-views img").forEach((img, index) => img.src = ASSETS[`nuscenes-${weather}-${["left", "center", "right"][index]}-igsw`]);
   $("#hero-caption").textContent = `nuScenes · 001 · Frame 049 · IGSW ${names[weather]}`;
 }));
-for (const [selector, dataKey, stateKey] of [["[data-scene]", "scene", "scene"], ["[data-weather]", "weather", "weather"], ["[data-view]", "view", "view"]]) {
+for (const [selector, dataKey, stateKey] of [["[data-scene]", "scene", "scene"], ["[data-weather]", "weather", "weather"]]) {
   $$(selector).forEach((button) => button.addEventListener("click", () => {
     state[stateKey] = button.dataset[dataKey];
     setActive(selector, state[stateKey], dataKey);
     renderComparison();
   }));
 }
-$("#comparison-method").addEventListener("change", (event) => { state.method = event.target.value; renderComparison(); });
-$("#wipe").addEventListener("input", renderWipe);
 $("#full-comparison").addEventListener("click", () => showImage(state.scene + "-comparison", `${names[state.scene]} · 049时刻 · 雨雪三视角完整比较`));
 for (const [selector, dataKey, stateKey, render] of [["[data-quant-dataset]", "quantDataset", "quantDataset", renderQuant], ["[data-quant-weather]", "quantWeather", "quantWeather", renderQuant], ["[data-ablation]", "ablation", "ablation", renderAblation], ["[data-ablation-weather]", "ablationWeather", "ablationWeather", renderAblation]]) {
   $$(selector).forEach((button) => button.addEventListener("click", () => {
@@ -695,7 +733,6 @@ if ("IntersectionObserver" in window) {
   $$("main section[id]").forEach((section) => observer.observe(section));
 }
 renderComparison();
-renderWipe();
 renderQuant();
 renderAblation();
 $("#temporal-image").src = ASSETS["temporal-nuscenes-rain"];
